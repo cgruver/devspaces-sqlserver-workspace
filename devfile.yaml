@@ -1,6 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
-  name: developer-images
+  name: devspaces-sqlserver-workspace
 components:
   - name: tools
     container:
