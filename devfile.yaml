@@ -1,0 +1,51 @@
+schemaVersion: 2.2.0
+metadata:
+  name: developer-images
+components:
+  - name: tools
+    container:
+      image: quay.io/cgruver0/che/dot-net:fedora      
+      memoryLimit: '2Gi'
+      memoryRequest: '1Gi'
+      cpuLimit: '1'
+      cpuRequest: '0.5'
+      mountSources: true 
+      sourceMapping: /workspace
+      env:
+        - name: VSCODE_DEFAULT_WORKSPACE
+          value: "/projects/devspaces-sqlserver-workspace/devspaces-sqlserver-workspace.code-workspace"
+      volumeMounts:
+        - name: nuget
+          path: /home/user/.nuget
+  - name: nuget
+    volume:
+      size: 1G            
+  - name: sqlserver-container
+    attributes:
+      container-overrides: 
+        securityContext:
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+    container:
+      image: mcr.microsoft.com/mssql/rhel/server:2022-CU17-rhel-9.1         
+      memoryLimit: '2Gi'
+      memoryRequest: '2Gi'
+      env:
+        - name: MSSQL_PID
+          value: "Developer"
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          value: "P@ssword1"
+      volumeMounts:
+        - name: mssql-db
+          path: /var/opt/mssql
+      endpoints:
+        - exposure: public
+          name: 'sqlsvr'
+          protocol: https
+          targetPort: 1433   
+  - name: mssql-db
+    volume:
+      size: 8Gi 
