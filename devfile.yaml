@@ -42,10 +42,17 @@ components:
         - name: mssql-db
           path: /var/opt/mssql
       endpoints:
-        - exposure: public
-          name: 'sqlsvr'
+        - exposure: internal
+          name: 'sqlsvr-1431'
+          targetPort: 1431   
+        - exposure: internal
+          name: 'sqlsvr-1433'
           protocol: https
-          targetPort: 1433   
+          targetPort: 1433
+        - exposure: internal
+          name: 'sqlsvr-1434'
+          protocol: https
+          targetPort: 1434
   - name: mssql-db
     volume:
       size: 8Gi 
